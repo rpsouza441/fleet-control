@@ -6,6 +6,7 @@ import br.dev.rodrigopinheiro.fleetControl.controller.dto.RecoveryJwtTokenDto;
 import br.dev.rodrigopinheiro.fleetControl.controller.dto.UserDto;
 import br.dev.rodrigopinheiro.fleetControl.entity.Role;
 import br.dev.rodrigopinheiro.fleetControl.entity.UserEntity;
+import br.dev.rodrigopinheiro.fleetControl.entity.enums.RoleName;
 import br.dev.rodrigopinheiro.fleetControl.exception.FleetControlException;
 import br.dev.rodrigopinheiro.fleetControl.exception.UserNotFoundByEmailException;
 import br.dev.rodrigopinheiro.fleetControl.exception.UserNotFoundException;
@@ -120,7 +121,8 @@ public class UserEntityService {
                 // Codifica a senha do usuário com o algoritmo bcrypt
                 .password(securityConfiguration.passwordEncoder().encode(createUserDto.password()))
                 // Atribui ao usuário uma permissão específica
-                .roles(List.of(Role.builder().name(createUserDto.role()).build()))
+                .roles(List.of(Role.builder().name(RoleName.ROLE_USER).build()))
+                .active(true)
                 .build();
 
         // Salva o novo usuário no banco de dados

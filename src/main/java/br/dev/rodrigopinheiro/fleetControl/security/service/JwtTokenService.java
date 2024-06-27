@@ -44,16 +44,17 @@ public class JwtTokenService {
                     .verify(token) // Verifica a validade do token
                     .getSubject(); // Obtém o assunto (neste caso, o nome de usuário) do token
         } catch (JWTVerificationException exception){
+            //TODO Exception
             throw new JWTVerificationException("Token inválido ou expirado.");
         }
     }
 
     private Instant creationDate() {
-        return ZonedDateTime.now(ZoneId.of("America/Recife")).toInstant();
+        return ZonedDateTime.now(ZoneId.of("America/Sao_Paulo")).toInstant();
     }
 
     private Instant expirationDate() {
-        return ZonedDateTime.now(ZoneId.of("America/Recife")).plusHours(4).toInstant();
+        return ZonedDateTime.now(ZoneId.of("America/Sao_Paulo")).plusHours(4).toInstant();
     }
 
 }

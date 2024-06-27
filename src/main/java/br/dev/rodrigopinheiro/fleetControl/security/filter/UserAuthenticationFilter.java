@@ -21,8 +21,8 @@ import java.util.Arrays;
 @Component
 public class UserAuthenticationFilter extends OncePerRequestFilter {
 
-    private JwtTokenService jwtTokenService; // Service que definimos anteriormente
-    private UserRepository userRepository; // Repository que definimos anteriormente
+    private JwtTokenService jwtTokenService;
+    private UserRepository userRepository;
 
     public UserAuthenticationFilter(UserRepository userRepository, JwtTokenService jwtTokenService) {
         this.userRepository = userRepository;
@@ -47,6 +47,7 @@ public class UserAuthenticationFilter extends OncePerRequestFilter {
                 // Define o objeto de autenticação no contexto de segurança do Spring Security
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             } else {
+                //TODO Exception
                 throw new RuntimeException("O token está ausente.");
             }
         }

@@ -45,7 +45,7 @@ public class UserControler {
         return new ResponseEntity<>("Autenticado com sucesso", HttpStatus.OK);
     }
 
-    @GetMapping("/test/customer")
+    @GetMapping("/test/user")
     public ResponseEntity<String> getCustomerAuthenticationTest() {
         return new ResponseEntity<>("Cliente autenticado com sucesso", HttpStatus.OK);
     }

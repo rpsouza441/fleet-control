@@ -1,6 +1,7 @@
 package br.dev.rodrigopinheiro.fleetControl.security.service;
 
 import br.dev.rodrigopinheiro.fleetControl.entity.UserEntity;
+import br.dev.rodrigopinheiro.fleetControl.exception.UserNotFoundByEmailException;
 import br.dev.rodrigopinheiro.fleetControl.repository.UserRepository;
 import br.dev.rodrigopinheiro.fleetControl.security.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +17,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserEntity user = userRepository.findByEmail(username).orElseThrow(() -> new RuntimeException("Usuário não encontrado."));
+    public UserDetails loadUserByUsername(String username) throws UserNotFoundByEmailException {
+        UserEntity user = userRepository.findByEmail(username).orElseThrow(() -> new UserNotFoundByEmailException(username));
         return new UserDetailsImpl(user);
     }
 }
