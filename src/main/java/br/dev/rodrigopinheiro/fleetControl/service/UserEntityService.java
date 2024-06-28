@@ -7,9 +7,8 @@ import br.dev.rodrigopinheiro.fleetControl.controller.dto.UserDto;
 import br.dev.rodrigopinheiro.fleetControl.entity.Role;
 import br.dev.rodrigopinheiro.fleetControl.entity.UserEntity;
 import br.dev.rodrigopinheiro.fleetControl.entity.enums.RoleName;
-import br.dev.rodrigopinheiro.fleetControl.exception.FleetControlException;
-import br.dev.rodrigopinheiro.fleetControl.exception.UserNotFoundByEmailException;
-import br.dev.rodrigopinheiro.fleetControl.exception.UserNotFoundException;
+import br.dev.rodrigopinheiro.fleetControl.exception.*;
+import br.dev.rodrigopinheiro.fleetControl.repository.RoleRepository;
 import br.dev.rodrigopinheiro.fleetControl.repository.UserRepository;
 import br.dev.rodrigopinheiro.fleetControl.security.SecurityConfiguration;
 import br.dev.rodrigopinheiro.fleetControl.security.UserDetailsImpl;
@@ -28,6 +27,8 @@ public class UserEntityService {
 
     private final UserRepository userRepository;
 
+    private final RoleRepository roleRepository;
+
     private AuthenticationManager authenticationManager;
 
     private JwtTokenService jwtTokenService;
@@ -35,10 +36,12 @@ public class UserEntityService {
    private SecurityConfiguration securityConfiguration;
 
     public UserEntityService(UserRepository userRepository,
+                             RoleRepository roleRepository,
                              AuthenticationManager authenticationManager,
                              JwtTokenService jwtTokenService,
                              SecurityConfiguration securityConfiguration) {
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
         this.authenticationManager = authenticationManager;
         this.jwtTokenService = jwtTokenService;
         this.securityConfiguration = securityConfiguration;
@@ -115,13 +118,22 @@ public class UserEntityService {
     // Método responsável por criar um usuário
     public void createUser(CreateUserDto createUserDto) {
 
+        // Check if the email already exists
+        if (userRepository.findByEmail(createUserDto.email()).isPresent()) {
+            throw new UserEmailAlreadyExistException(createUserDto.email());
+        }
+
+        var userRole = RoleName.USER;
+        var role = roleRepository.findByName(userRole).orElseThrow(() -> new RoleNotFoundByNameException(userRole.name()));
+
         // Cria um novo usuário com os dados fornecidos
         UserEntity newUser = UserEntity.builder()
+                .name(createUserDto.name())
                 .email(createUserDto.email())
                 // Codifica a senha do usuário com o algoritmo bcrypt
                 .password(securityConfiguration.passwordEncoder().encode(createUserDto.password()))
                 // Atribui ao usuário uma permissão específica
-                .roles(List.of(Role.builder().name(RoleName.ROLE_USER).build()))
+                .roles(List.of(role))
                 .active(true)
                 .build();
 

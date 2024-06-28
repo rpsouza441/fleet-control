@@ -13,7 +13,6 @@ import java.util.Collection;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name="tb_user_entity")
 public class UserEntity {
 
     @Id
@@ -25,8 +24,6 @@ public class UserEntity {
     private String email;
 
     private String password;
-
-    private String role;
 
     private Boolean active;
 
